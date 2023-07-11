@@ -6,5 +6,4 @@
 export.cfg
 export_presets.cfg
 
-# Ignore .vs folder
-.vs/
+*.suo
