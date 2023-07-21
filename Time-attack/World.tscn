@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://g7mlvqsybeos"]
 
-[ext_resource type="Script" path="res://Node2D.cs" id="1_4vljr"]
 [ext_resource type="Script" path="res://Timer.gd" id="1_eudpx"]
+[ext_resource type="Script" path="res://TimeTables.cs" id="2_v307i"]
 [ext_resource type="Texture2D" uid="uid://dpjdbmrs17wj7" path="res://Player Animations/Idle.png" id="3_3xvle"]
 [ext_resource type="Texture2D" uid="uid://3oqlfmp8pje4" path="res://Player Animations/Run.png" id="4_qirou"]
 [ext_resource type="Texture2D" uid="uid://cutcakk1whb2f" path="res://Player Animations/Jump.png" id="5_pcrm5"]
@@ -15,8 +15,8 @@
 script = ExtResource("1_eudpx")
 max_back_time = 5
 
-[node name="Node2D" type="Node2D" parent="."]
-script = ExtResource("1_4vljr")
+[node name="Time Tables" type="Node2D" parent="."]
+script = ExtResource("2_v307i")
 
 [node name="Idle" type="Sprite2D" parent="."]
 visible = false
@@ -65,10 +65,10 @@ offset_right = 405.0
 offset_bottom = 274.0
 
 [node name="Button" type="Button" parent="."]
-offset_left = 26.0
-offset_top = 290.0
-offset_right = 197.0
-offset_bottom = 367.0
+offset_left = 28.0
+offset_top = 444.0
+offset_right = 199.0
+offset_bottom = 521.0
 action_mode = 0
 text = "Press to go back"
 
