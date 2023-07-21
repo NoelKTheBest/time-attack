@@ -26,7 +26,7 @@ public partial class TimeTables : Godot.Node2D
         {
             if (time < windowBottom)
             {
-                timedQueue.Dequeue()
+                timedQueue.Dequeue();
             }
         }
     }

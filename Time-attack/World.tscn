@@ -1,64 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://g7mlvqsybeos"]
+[gd_scene load_steps=3 format=3 uid="uid://g7mlvqsybeos"]
 
-[ext_resource type="Script" path="res://Timer.gd" id="1_eudpx"]
-[ext_resource type="Script" path="res://TimeTables.cs" id="2_v307i"]
-[ext_resource type="Texture2D" uid="uid://dpjdbmrs17wj7" path="res://Player Animations/Idle.png" id="3_3xvle"]
-[ext_resource type="Texture2D" uid="uid://3oqlfmp8pje4" path="res://Player Animations/Run.png" id="4_qirou"]
-[ext_resource type="Texture2D" uid="uid://cutcakk1whb2f" path="res://Player Animations/Jump.png" id="5_pcrm5"]
-[ext_resource type="Texture2D" uid="uid://cbv43niyy4wyv" path="res://Player Animations/Fall.png" id="6_5dqkb"]
-[ext_resource type="Texture2D" uid="uid://bd32ext7sf2aj" path="res://Player Animations/RecoverReady.png" id="7_nmcol"]
-[ext_resource type="Texture2D" uid="uid://ckk82fqchupkj" path="res://Player Animations/Consecutive Attack.png" id="8_t07fe"]
-[ext_resource type="Texture2D" uid="uid://dokgim21eka12" path="res://Player Animations/Hit.png" id="9_eikbc"]
-[ext_resource type="Texture2D" uid="uid://du5wrtn0j5i8w" path="res://Player Animations/Death.png" id="10_nu68b"]
+[ext_resource type="Script" path="res://Scripts/Timer.gd" id="1_4s384"]
+[ext_resource type="Script" path="res://Scripts/TimeTables.cs" id="2_v06k8"]
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_eudpx")
+script = ExtResource("1_4s384")
 max_back_time = 5
 
 [node name="Time Tables" type="Node2D" parent="."]
-script = ExtResource("2_v307i")
-
-[node name="Idle" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(292, 118)
-texture = ExtResource("3_3xvle")
-
-[node name="Run" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(397, 118)
-texture = ExtResource("4_qirou")
-
-[node name="Jump" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(182, 182)
-texture = ExtResource("5_pcrm5")
-
-[node name="Fall" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(260, 183)
-texture = ExtResource("6_5dqkb")
-
-[node name="RecoverReady" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(346, 184)
-texture = ExtResource("7_nmcol")
-
-[node name="ConsecutiveAttack" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(264, 281)
-texture = ExtResource("8_t07fe")
-
-[node name="Hit" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(148, 216)
-texture = ExtResource("9_eikbc")
-
-[node name="Death" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(289, 217)
-texture = ExtResource("10_nu68b")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+script = ExtResource("2_v06k8")
 
 [node name="Label" type="Label" parent="."]
 offset_right = 405.0
