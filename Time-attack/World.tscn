@@ -1,7 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://g7mlvqsybeos"]
+[gd_scene load_steps=6 format=3 uid="uid://g7mlvqsybeos"]
 
 [ext_resource type="Script" path="res://Scripts/Timer.gd" id="1_4s384"]
 [ext_resource type="Script" path="res://Scripts/TimeTables.cs" id="2_v06k8"]
+[ext_resource type="Texture2D" uid="uid://cbxjqsmmlf8fo" path="res://icon.svg" id="3_n8y2g"]
+[ext_resource type="PackedScene" uid="uid://cosg7qcjku6im" path="res://Player.tscn" id="4_bka7a"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_18n3t"]
+size = Vector2(1156, 135)
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_4s384")
@@ -21,6 +26,21 @@ offset_right = 199.0
 offset_bottom = 521.0
 action_mode = 0
 text = "Press to go back"
+
+[node name="Platform" type="Area2D" parent="."]
+position = Vector2(0, 10)
+metadata/_edit_group_ = true
+
+[node name="Icon" type="Sprite2D" parent="Platform"]
+position = Vector2(579, 705)
+scale = Vector2(8.98438, 1)
+texture = ExtResource("3_n8y2g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+position = Vector2(579, 705.5)
+shape = SubResource("RectangleShape2D_18n3t")
+
+[node name="Player" parent="." instance=ExtResource("4_bka7a")]
 
 [connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
 [connection signal="button_up" from="Button" to="." method="_on_button_button_up"]

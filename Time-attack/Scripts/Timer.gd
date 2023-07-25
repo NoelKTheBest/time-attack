@@ -89,9 +89,9 @@ func _process(delta):
 	#if (oldest_time < window_bottom):
 	#	oldest_time = times[1]
 	#	times.remove_at(0)
-	#	cs_script.RemoveEntry()
+	#	cs_script.RemoveFromQueue()
 	
-	cs_script.RemoveEntry(window_bottom)
+	cs_script.RemoveFromQueue(window_bottom)
 
 
 func _on_button_button_down():
