@@ -1,12 +1,14 @@
-extends Area2D
+extends CharacterBody2D
 signal hit
 
 @export var speed = 400 # How fast the player will move (pixels/sec).
+@export var jump_force = 1000 # How high the player will jumo
 var screen_size # Size of the game window.
 
 const g = 7/4
 const v_term = 15/4
 var fallspd = 0
+var jump_spd
 
 func _ready():
 	screen_size = get_viewport_rect().size
@@ -30,9 +32,20 @@ func _process(delta):
 		fallspd = fallspd + g
 		if (fallspd >= v_term):
 			fallspd = v_term
-		velocity.y = fallspd * speed
+		velocity.y += fallspd * speed
 	else:
-		velocity.y = 0
+		if (Input.is_action_just_pressed("jump")):
+			print("before jump: " + str(velocity.y))
+			velocity.y = -jump_force
+			print("after jump: " + str(velocity.y))
+		elif (jump_spd < 0):
+			pass
+		else:
+			fallspd = 0
+			velocity.y = 0
+	
+	if (is_on_floor() && Input.is_action_just_pressed("jump")):
+		pass
 	
 	if velocity.x != 0:
 		$AnimatedSprite2D.play("run")
@@ -41,12 +54,18 @@ func _process(delta):
 	
 	if velocity.y > 0:
 		$AnimatedSprite2D.play("fall")
+	elif velocity.y < 0:
+		$AnimatedSprite2D.play("jump")
 	
+	print(velocity.y)
+	jump_spd = velocity.y
 	position += velocity * delta
+	#print("velocity * delta: " + str(velocity.y * delta))
 	position.x = clamp(position.x, 0, screen_size.x)
-	position.y = clamp(position.y, 0, screen_size.y)
+	#position.y = clamp(position.y, 0, screen_size.y)
+	#print(position)
 
 
-func is_on_floor():
-	if (has_overlapping_areas()):
-		return true
+#func is_on_floor():
+#	if (has_overlapping_areas()):
+#		return true

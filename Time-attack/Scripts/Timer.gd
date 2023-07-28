@@ -13,6 +13,8 @@ var game_time
 var rewinded_time
 
 var initial_back_time
+var next_back_time
+var next_time_value
 var back_time
 
 # maximum amount of time you can go back
@@ -21,6 +23,11 @@ var back_time
 # times at when things change in the scene
 var times = []
 var oldest_time
+
+# time tables
+var vector_time_table = {}
+var animation_time_table = {}
+var sprite_flip_time_table = {}
 
 # normal time progression = 1; reversing time = -1; slowed time progression = 0.75, 0.5, or 0.25
 var time_scale
@@ -41,7 +48,6 @@ var window_head
 var is_rewinding
 
 var text_area
-var cs_script
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -51,7 +57,8 @@ func _ready():
 	rewinded_time = 0
 	back_time = 0
 	text_area = get_node("Label")
-	cs_script = get_node("Time Tables")
+	$Player.override_velocity = null
+	$Player.override_animation = null
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -64,13 +71,15 @@ func _process(delta):
 	else:
 		_on_button_held_down()
 	
-	if (Input.is_action_just_pressed("movement")):
+	#if (Input.is_action_just_pressed("movement")):
 		# times.append(game_time)
-		cs_script.AddEntry(game_time)
+		#cs_script.AddEntry(game_time)
 		#if (times.size() == 0):
 		#	oldest_time = game_time;
 	
-	print(cs_script.PrintQueue())
+	#print("Queue: " + cs_script.PrintQueue())
+	#print(cs_script.PrintTimeTables())
+	#cs_script.PrintTimeTables()
 	
 	var format_string = "
 		Time at start of application: %s\n 
@@ -86,25 +95,44 @@ func _process(delta):
 	
 	text_area.text = actual_string
 	
-	#if (oldest_time < window_bottom):
-	#	oldest_time = times[1]
-	#	times.remove_at(0)
-	#	cs_script.RemoveFromQueue()
+	if !is_rewinding:
+		for time_value in times:
+			if (time_value < window_bottom):
+				times.pop_front()
+				vector_time_table.erase(time_value)
+				animation_time_table.erase(time_value)
 	
-	cs_script.RemoveFromQueue(window_bottom)
+	#print(times)
+	#print(vector_time_table)
+	#print(animation_time_table)
 
 
 func _on_button_button_down():
-	is_rewinding = true
-	initial_back_time = time
+	print("rewinding")
+	if (!times.is_empty()):
+		is_rewinding = true
+		initial_back_time = time
+		next_time_value = times.pop_back()
+		
+		# in case we run out of time values
+		if (next_time_value == null):
+			is_rewinding = false
+			rewinded_time += back_time
+			$Player.override_velocity = null
+			$Player.override_animation = null
+		
+		next_back_time = window_head - next_time_value
 
 
 func _on_button_button_up():
+	# if we already stopped going back in time, don't do anything and return from this function
 	if !is_rewinding:
 		return
 	
 	is_rewinding = false
 	rewinded_time += back_time
+	$Player.override_velocity = null
+	$Player.override_animation = null
 
 
 func _on_button_held_down():
@@ -118,6 +146,24 @@ func _on_button_held_down():
 	if back_time > (max_back_time * 1000) || back_time > game_time:
 		is_rewinding = false
 		rewinded_time += back_time
+		$Player.override_velocity = null
+		$Player.override_animation = null
+	
+	if back_time >= next_back_time:
+		$Player.override_velocity = vector_time_table[next_time_value]
+		$Player.override_animation = animation_time_table[next_time_value]
+		
+		next_time_value = times.pop_back()
+		
+		# in case we run out of time values
+		if (next_time_value == null):
+			is_rewinding = false
+			rewinded_time += back_time
+			$Player.override_velocity = null
+			$Player.override_animation = null
+		
+		print(window_head)
+		next_back_time = window_head - next_time_value
 
 
 func _shift_window():
@@ -125,3 +171,13 @@ func _shift_window():
 	window_bottom = game_time - (max_back_time * 1000)
 
 
+# For the following two signals, game_time has the same value
+func _on_player__on_velocity_changed(velocity):
+	# print("velocity: " + str(game_time))
+	vector_time_table[game_time] = velocity
+	times.append(game_time)
+
+
+func _on_player__on_animation_changed(animation):
+	# print("animation: " + str(game_time))
+	animation_time_table[game_time] = animation

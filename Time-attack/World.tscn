@@ -1,19 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://g7mlvqsybeos"]
+[gd_scene load_steps=5 format=3 uid="uid://g7mlvqsybeos"]
 
 [ext_resource type="Script" path="res://Scripts/Timer.gd" id="1_4s384"]
-[ext_resource type="Script" path="res://Scripts/TimeTables.cs" id="2_v06k8"]
 [ext_resource type="Texture2D" uid="uid://cbxjqsmmlf8fo" path="res://icon.svg" id="3_n8y2g"]
 [ext_resource type="PackedScene" uid="uid://cosg7qcjku6im" path="res://Player.tscn" id="4_bka7a"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_18n3t"]
-size = Vector2(1156, 135)
+size = Vector2(1156, 133)
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_4s384")
 max_back_time = 5
 
 [node name="Time Tables" type="Node2D" parent="."]
-script = ExtResource("2_v06k8")
+visible = false
 
 [node name="Label" type="Label" parent="."]
 offset_right = 405.0
@@ -27,8 +26,8 @@ offset_bottom = 521.0
 action_mode = 0
 text = "Press to go back"
 
-[node name="Platform" type="Area2D" parent="."]
-position = Vector2(0, 10)
+[node name="Platform" type="StaticBody2D" parent="."]
+position = Vector2(0, 4)
 metadata/_edit_group_ = true
 
 [node name="Icon" type="Sprite2D" parent="Platform"]
@@ -37,10 +36,12 @@ scale = Vector2(8.98438, 1)
 texture = ExtResource("3_n8y2g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
-position = Vector2(579, 705.5)
+position = Vector2(579, 706.5)
 shape = SubResource("RectangleShape2D_18n3t")
 
 [node name="Player" parent="." instance=ExtResource("4_bka7a")]
 
 [connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
 [connection signal="button_up" from="Button" to="." method="_on_button_button_up"]
+[connection signal="_on_animation_changed" from="Player" to="." method="_on_player__on_animation_changed"]
+[connection signal="_on_velocity_changed" from="Player" to="." method="_on_player__on_velocity_changed"]
