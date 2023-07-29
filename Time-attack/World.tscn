@@ -41,7 +41,5 @@ shape = SubResource("RectangleShape2D_18n3t")
 
 [node name="Player" parent="." instance=ExtResource("4_bka7a")]
 
-[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
-[connection signal="button_up" from="Button" to="." method="_on_button_button_up"]
 [connection signal="_on_animation_changed" from="Player" to="." method="_on_player__on_animation_changed"]
 [connection signal="_on_velocity_changed" from="Player" to="." method="_on_player__on_velocity_changed"]

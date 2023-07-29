@@ -13,15 +13,21 @@ var game_time
 var rewinded_time
 
 var initial_back_time
+var back_time
 var next_back_time
 var next_time_value
-var back_time
+var next_back_time_v
+var next_back_time_a
+var next_time_value_v
+var next_time_value_a
 
 # maximum amount of time you can go back
 @export var max_back_time = 0
 
 # times at when things change in the scene
 var times = []
+var vector_times = []
+var animation_times = []
 var oldest_time
 
 # time tables
@@ -62,9 +68,12 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	time = Time.get_ticks_msec()
 	_shift_window()
+	
+	if Input.is_action_just_pressed("rewind_time"): _on_button_button_down()
+	if Input.is_action_just_released("rewind_time"): _on_button_button_up()
 	
 	if !is_rewinding:
 		game_time = time - start_time - rewinded_time
@@ -96,11 +105,17 @@ func _process(delta):
 	text_area.text = actual_string
 	
 	if !is_rewinding:
-		for time_value in times:
+		for time_value in vector_times:
 			if (time_value < window_bottom):
-				times.pop_front()
+				vector_times.pop_front()
 				vector_time_table.erase(time_value)
+				#animation_time_table.erase(time_value)
+		
+		for time_value in animation_times:
+			if (time_value < window_bottom):
+				animation_times.pop_front()
 				animation_time_table.erase(time_value)
+				#vector_time_table.erase(time_value)
 	
 	#print(times)
 	#print(vector_time_table)
@@ -108,20 +123,24 @@ func _process(delta):
 
 
 func _on_button_button_down():
-	print("rewinding")
-	if (!times.is_empty()):
+	if (!vector_times.is_empty() || !animation_times.is_empty()):
 		is_rewinding = true
 		initial_back_time = time
-		next_time_value = times.pop_back()
+		next_time_value_v = vector_times.pop_back()
+		next_time_value_a = animation_times.pop_back()
+		#next_time_value = times.pop_back()
 		
 		# in case we run out of time values
-		if (next_time_value == null):
+		if (next_time_value_v == null || next_time_value_a == null):
 			is_rewinding = false
+			print(is_rewinding)
 			rewinded_time += back_time
 			$Player.override_velocity = null
 			$Player.override_animation = null
 		
-		next_back_time = window_head - next_time_value
+		next_back_time_v = window_head - next_time_value_v
+		next_back_time_a = window_head - next_time_value_a
+		#next_back_time = window_head - next_time_value
 
 
 func _on_button_button_up():
@@ -149,21 +168,41 @@ func _on_button_held_down():
 		$Player.override_velocity = null
 		$Player.override_animation = null
 	
-	if back_time >= next_back_time:
-		$Player.override_velocity = vector_time_table[next_time_value]
-		$Player.override_animation = animation_time_table[next_time_value]
+	if back_time >= next_back_time_v:
+		# these dictionaries will not contain the same time values
+		$Player.override_velocity = vector_time_table[next_time_value_v]
+		#$Player.override_animation = animation_time_table[next_time_value]
 		
-		next_time_value = times.pop_back()
+		next_time_value_v = vector_times.pop_back()
 		
 		# in case we run out of time values
-		if (next_time_value == null):
+		if (next_time_value_v == null):
 			is_rewinding = false
 			rewinded_time += back_time
 			$Player.override_velocity = null
 			$Player.override_animation = null
+			return
 		
-		print(window_head)
-		next_back_time = window_head - next_time_value
+		#print(window_head)
+		next_back_time_v = window_head - next_time_value_v
+	
+	if back_time >= next_back_time_a:
+		# these dictionaries will not contain the same time values
+		#$Player.override_velocity = vector_time_table[next_time_value]
+		$Player.override_animation = animation_time_table[next_time_value_a]
+		
+		next_time_value_a = animation_times.pop_back()
+		
+		# in case we run out of time values
+		if (next_time_value_a == null):
+			is_rewinding = false
+			rewinded_time += back_time
+			$Player.override_velocity = null
+			$Player.override_animation = null
+			return
+		
+		#print(window_head)
+		next_back_time_a = window_head - next_time_value_a
 
 
 func _shift_window():
@@ -175,9 +214,13 @@ func _shift_window():
 func _on_player__on_velocity_changed(velocity):
 	# print("velocity: " + str(game_time))
 	vector_time_table[game_time] = velocity
-	times.append(game_time)
+	vector_times.append(game_time)
+	print("vectors: " + str(vector_time_table))
+	#times.append(game_time)
 
 
 func _on_player__on_animation_changed(animation):
 	# print("animation: " + str(game_time))
 	animation_time_table[game_time] = animation
+	animation_times.append(game_time)
+	print("animation: " + str(animation_time_table))

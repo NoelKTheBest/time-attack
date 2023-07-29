@@ -11,6 +11,7 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var attacked = false
 
 # current values of the player
+var first_iteration
 var current_animation = ""
 var current_velocity
 var previous_velocity
@@ -19,7 +20,11 @@ var previous_velocity
 var override_velocity
 var override_animation
 
-func _physics_process(delta):
+func _ready():
+	first_iteration = true
+
+
+func _process(delta):
 	if (override_velocity == null && override_animation == null):
 		#print("ready to move")
 		previous_velocity = current_velocity
@@ -65,6 +70,11 @@ func _physics_process(delta):
 
 		if attacked: velocity = Vector2.ZERO
 		
+		#if first_iteration:
+		#	current_animation = $AnimatedSprite2D.animation
+		#	_on_animation_changed.emit(current_animation)
+		#	first_iteration = false
+	
 		current_velocity = velocity
 		
 		if (current_velocity != previous_velocity):
@@ -73,7 +83,7 @@ func _physics_process(delta):
 		move_and_slide()
 	else:
 		#print("going back")
-		velocity = override_velocity * -1
+		if override_velocity != null: velocity = override_velocity * -1
 		move_and_slide()
 		
 		$AnimatedSprite2D.play_backwards(override_animation)
