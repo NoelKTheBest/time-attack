@@ -37,5 +37,3 @@ An engine like Unity, makes this and stopping time easy by exposing the *timeSca
 
 ## Conclusion
 This is about all I have to say. If you'd like to contribute to this repo or fork it, feel free to do so.
-
-MIT License of course.
