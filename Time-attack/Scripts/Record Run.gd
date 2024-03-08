@@ -1,6 +1,6 @@
 extends Node2D
 
-
+# Create variables
 var time_start
 var time_now
 var times
@@ -34,12 +34,13 @@ func _process(delta):
 func _physics_process(delta):
 	var velocity = Vector2.ZERO # The player's movement vector.
 	
-	# If we start the timer again, the player can no longer move 
+	# Start timer. Timer must has one_shot set to true
 	if Input.is_action_just_pressed('start timer'):
 		$'../Timer'.start()
 		timer_started = true
 	
 	time_now = Time.get_ticks_msec() - time_start
+	# sliding windows aren't used in this demo
 	window_bottom = time_now - 5000
 	
 	var format_string = "
@@ -59,16 +60,24 @@ func _physics_process(delta):
 	
 	text_area.text = actual_string
 	
+	# Record times while timer is counting down
 	if timer_started:
 		times.append(time_now)
 		values[time_now] = player.position
 
 
+# Once timer has stopped, playback begins
 func _on_timer_timeout():
 	timer_started = false
+	# This function call sets the global variables of the player to times and values.
+		# This is a no-no unless done right since Godot (at least by default) does not
+		# copy data upon variable assignment. Rather when setting a variable to another 
+		# variable a reference to the memory address is shared. In other words the 
+		# variables are now linked due to this call. This caused problems later on.
 	player.control_player(times, values)
 
 
+# Clear the records. Signal sent by Player script
 func _on_player__on_playback_finished():
 	times.clear()
 	values.clear()

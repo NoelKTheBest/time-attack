@@ -1,6 +1,10 @@
 extends CharacterBody2D
+
+# I am no longer recording velocity changes, instead i'm recording the position
 signal _on_velocity_changed(veloctiy)
 signal _on_animation_changed(animation)
+
+# This is the only signal that is currently used
 signal _on_playback_finished()
 
 
@@ -32,8 +36,6 @@ func _ready():
 
 
 func _process(delta):
-	print('No. of times: ' + str(time_array.size()))
-	print('No. of values: ' + str(value_dictionary.size()))
 	if time_array.size() == 0 and value_dictionary.size() == 0:
 		#print("ready to move")
 		previous_velocity = current_velocity
@@ -90,28 +92,21 @@ func _process(delta):
 			_on_velocity_changed.emit(current_velocity)
 		
 		move_and_slide()
-	#	if (override_velocity == null && override_animation == null):
-	#	else:
-	#		pass
-			#print("going back")
-	#		if override_velocity != null: velocity = override_velocity * -1
-	#		move_and_slide()
-	#		$AnimatedSprite2D.play_backwards(override_animation)
-			
-			#if $AnimatedSprite2D.animation != override_animation:
-			#	$AnimatedSprite2D.play_backwards(override_animation)
 
 
 func _physics_process(delta):
+	# Run code when we have valid records
 	if time_array.size() != 0 and value_dictionary.size() != 0:
+		# Get last timestamp to start playback in reverse
 		var ri = time_array.size() - 1
 		var rj = animation_times.size() - 1
 		
 		position = value_dictionary[time_array[ri]]
 		
+		# rj kept giving me problems so here's a little bandaid for that
 		if rj > 0:
+			# change animation only when a timestamp is reached
 			if time_array[ri] == animation_times[rj]:
-	#			print(animation_values[animation_times[rj]])
 				var animation = animation_values[animation_times[rj]]
 				if animation != null:
 					$AnimatedSprite2D.play_backwards(animation)
@@ -119,6 +114,7 @@ func _physics_process(delta):
 		
 		if ri == 0:
 			# Reset local script variables to new memory address
+				# Unlinks variables in player and recorder scripts
 			time_array = []
 			value_dictionary = {}
 			animation_times = []
@@ -127,11 +123,12 @@ func _physics_process(delta):
 			# Send signal to Recorders to clear their records
 			_on_playback_finished.emit()
 		
+		# Remove last timestamp
 		time_array.pop_back()
 
 
 func control_player(times: Array, values: Dictionary):
-	print('Hello Again')
+	# bad idea in this context
 	time_array = times
 	value_dictionary = values
 	override_animation = 1
