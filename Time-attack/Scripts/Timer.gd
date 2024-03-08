@@ -63,6 +63,8 @@ func _ready():
 	rewinded_time = 0
 	back_time = 0
 	text_area = get_node("Label")
+	
+	# These values are changed once we have to override player movement controls
 	$Player.override_velocity = null
 	$Player.override_animation = null
 
@@ -126,6 +128,8 @@ func _on_button_button_down():
 	if (!vector_times.is_empty() || !animation_times.is_empty()):
 		is_rewinding = true
 		initial_back_time = time
+		
+		# The next values to be used to control the player
 		next_time_value_v = vector_times.pop_back()
 		next_time_value_a = animation_times.pop_back()
 		#next_time_value = times.pop_back()

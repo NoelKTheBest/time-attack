@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://uxo55dtiyqh6"]
+[gd_scene load_steps=7 format=3 uid="uid://uxo55dtiyqh6"]
 
 [ext_resource type="Script" path="res://Scripts/TestScript.gd" id="1_65bck"]
 [ext_resource type="PackedScene" uid="uid://cosg7qcjku6im" path="res://Player.tscn" id="2_3qefk"]
 [ext_resource type="Texture2D" uid="uid://cbxjqsmmlf8fo" path="res://icon.svg" id="3_cc1bm"]
+[ext_resource type="Script" path="res://Scripts/Record Animation.gd" id="4_4px5j"]
+[ext_resource type="Script" path="res://Scripts/Record Run.gd" id="4_wq8qh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f2ioi"]
 size = Vector2(1156, 133)
@@ -25,12 +27,28 @@ texture = ExtResource("3_cc1bm")
 position = Vector2(579, 706.5)
 shape = SubResource("RectangleShape2D_f2ioi")
 
-[node name="Record Jump" type="Node2D" parent="."]
-
-[node name="Record Fall" type="Node2D" parent="."]
-
-[node name="Record Attack" type="Node2D" parent="."]
+[node name="Record Animation" type="Node2D" parent="."]
+script = ExtResource("4_4px5j")
 
 [node name="Record Run" type="Node2D" parent="."]
+script = ExtResource("4_wq8qh")
 
-[node name="Record Idle" type="Node2D" parent="."]
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="Label" type="Label" parent="."]
+offset_right = 364.0
+offset_bottom = 290.0
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 773.0
+offset_top = 4.0
+offset_right = 1152.0
+offset_bottom = 145.0
+
+[connection signal="_on_animation_changed" from="Player" to="Record Animation" method="_on_player__on_animation_changed"]
+[connection signal="_on_playback_finished" from="Player" to="Record Animation" method="_on_player__on_playback_finished"]
+[connection signal="_on_playback_finished" from="Player" to="Record Run" method="_on_player__on_playback_finished"]
+[connection signal="timeout" from="Timer" to="Record Animation" method="_on_timer_timeout"]
+[connection signal="timeout" from="Timer" to="Record Run" method="_on_timer_timeout"]
